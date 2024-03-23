@@ -9,6 +9,7 @@ services:
       APP_KEY: ''
       APP_SECRET: ''
       PORT: 5173
+      DATABASE_URL: 'file:/opt/riding-tracer/app.db'
     ports:
       - target: 5173
         published: 5173

@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model TraceRecord {
+  id          Int             @id @default(dbgenerated())
+  // 开始时间，毫秒级时间戳
+  startTime   Int
+  pointsSet   TracePointsSet? @relation(fields: [pointsSetId], references: [id])
+  pointsSetId Int
+}
+
+model TracePointsSet {
+  id          Int           @id @default(dbgenerated())
+  // 结束时间，毫秒级时间戳
+  endTime     Int
+  status      Int
+  speed       Float
+  distance    Float
+  pointsSet   String
+  TraceRecord TraceRecord[]
+}
+
+model User {
+  id Int @id @default(dbgenerated())
+  username String
+  password String
+  createTime Int
+}
