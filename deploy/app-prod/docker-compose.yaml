@@ -1,0 +1,16 @@
+version: '3'
+services:
+  riding-tracer:
+    container_name: riding-tracer
+    image: node:18.19-alpine
+    volumes:
+      - /opt/riding-tracer:/opt/riding-tracer
+    environment:
+      APP_KEY: ''
+      APP_SECRET: ''
+      PORT: 5173
+    ports:
+      - target: 5173
+        published: 5173
+    working_dir: /opt/riding-tracer
+    command: 'npm i; remix-serve build/server/index.js'

@@ -7,6 +7,14 @@
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
+  rules: {
+    quotes: ['error', 'single'],
+    'key-spacing': ['error', { 'beforeColon': false }],
+    semi: [2, 'never'],
+    'block-spacing': 'error',
+    'object-curly-spacing': ['error', 'always'],
+    indent: ['error', 2]
+  },
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
