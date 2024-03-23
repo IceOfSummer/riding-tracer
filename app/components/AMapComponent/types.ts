@@ -1,6 +1,6 @@
 
 
-type GeolocationResult = {
+export type GeolocationResult = {
     /**
      * expected 0
      */
@@ -40,4 +40,11 @@ type GeolocationResult = {
     altitudeAccuracy: number | null
     heading: number | null
     speed: number | null
+}
+
+export interface Geolocation extends AMap.Control {
+
+    getCurrentPosition(cb: (status: string, result: GeolocationResult) => void): void
+
+
 }

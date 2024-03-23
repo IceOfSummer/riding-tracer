@@ -6,6 +6,14 @@ import {
   ScrollRestoration,
 } from '@remix-run/react'
 import React from 'react'
+import 'normalize.css'
+
+export function links() {
+  return [
+    { rel: 'stylesheet', href: '/antd-mobile-styles' }, 
+  ]
+}
+
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

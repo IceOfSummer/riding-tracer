@@ -5,7 +5,8 @@
     "**/.server/**/*.ts",
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
-    "**/.client/**/*.tsx"
+    "**/.client/**/*.tsx",
+    "global.d.ts"
   ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
@@ -23,7 +24,9 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": ["./app/*"],
+      "antd-mobile": ["node_modules/antd-mobile/bundle/antd-mobile.es.js"],
+      "antd-mobile-style/*": ["node_modules/antd-mobile/*"]
     },
     // Vite takes care of building everything, not tsc.
     "noEmit": true
