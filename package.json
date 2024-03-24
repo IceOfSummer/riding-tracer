@@ -8,7 +8,7 @@
     "dev": "concurrently \"npm run sass\" \"remix vite:dev --port 5173 --host 127.0.0.1\"",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
-    "sass": "sass --load-path=app/setyles --watch app/:app/",
+    "sass": "sass --load-path=app/styles --watch app/:app/",
     "typecheck": "tsc"
   },
   "prisma": {

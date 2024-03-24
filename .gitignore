@@ -7,3 +7,4 @@ node_modules
 *.db
 app/**/*.css
 app/**/*.css.map
+!app/styles/root.css

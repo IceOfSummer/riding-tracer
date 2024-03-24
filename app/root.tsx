@@ -1,5 +1,4 @@
 import {
-  ClientLoaderFunctionArgs,
   Links,
   Meta,
   Outlet,
@@ -8,10 +7,8 @@ import {
 } from '@remix-run/react'
 import React from 'react'
 import 'normalize.css'
-import { LoaderFunctionArgs } from '@remix-run/node'
-import { getSession } from '~/server/session.server'
+import '~/styles/root.css'
 import RootErrorBoundary from '~/components/RootErrorBoundary'
-import { unauthorized } from '~/server/util/ResponseUtils.server'
 
 export function links() {
   return [

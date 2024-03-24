@@ -1,4 +1,5 @@
 import { createCookieSessionStorage } from '@remix-run/node'
+import { unauthorized } from '~/server/util/ResponseUtils.server'
 
 type SessionData = {
     userId: number;
@@ -47,11 +48,20 @@ type SessionDataWrapper = SessionData & {
   set: <T> (key: SessionValueKey<T>, value: T) => void
 }
 
-
-export const getSession = async (request: Request): Promise<SessionDataWrapper | null> => {
+async function getSession0(request: Request): Promise<SessionDataWrapper | null>
+/**
+ * 获取session
+ * @param request req
+ * @param force 强制获取，如果没有登录，则直接报错
+ */
+async function getSession0(request: Request, force: boolean): Promise<SessionDataWrapper>
+async function getSession0(request: Request, force?: boolean): Promise<SessionDataWrapper | null> {
   const session = await sessionStorage.getSession(request.headers.get('Cookie'))
   const userId =session.get('userId')
   if (userId === undefined) {
+    if (force) {
+      throw unauthorized()
+    }
     return null
   }
   return {
@@ -64,6 +74,9 @@ export const getSession = async (request: Request): Promise<SessionDataWrapper |
     }
   }
 }
+
+
+export const getSession = getSession0
 
 export const createSession = async (request: Request, data: SessionData) => {
   const session = await sessionStorage.getSession(request.headers.get('Cookie'))

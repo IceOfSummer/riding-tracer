@@ -8,11 +8,14 @@ datasource db {
 }
 
 model TraceRecord {
-  id          Int             @id @default(dbgenerated())
+  userId      Int
+  id          Int             @default(dbgenerated())
   // 开始时间，毫秒级时间戳
   startTime   DateTime
   pointsSet   TracePointsSet? @relation(fields: [pointsSetId], references: [id])
   pointsSetId Int
+
+  @@id([userId, id])
 }
 
 model TracePointsSet {
@@ -27,9 +30,24 @@ model TracePointsSet {
 }
 
 model User {
-  id Int @id @default(dbgenerated())
-  username String @unique
-  password String
+  id         Int      @id @default(dbgenerated())
+  username   String   @unique
+  password   String
   createTime DateTime
+}
 
+model UserAchievement {
+  id Int @id
+  // 共跑了多少米
+  distance Int @default(0)
+  // 共记录了多少时间 秒
+  time Int @default(0)
+  // 一共跑了几次
+  count Int @default(0)
+  // 最长运动时间 s
+  longestTime Int @default(0)
+  // 最快的一次速度 m/s
+  fastest Int @default(0)
+  // 一次最长跑了多远
+  longestDistance Int @default(0)
 }
