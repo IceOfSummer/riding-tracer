@@ -10,6 +10,7 @@ services:
       APP_SECRET: ''
       PORT: 5173
       DATABASE_URL: 'file:/opt/riding-tracer/app.db'
+      SESSION_SECRET: 'RIDING-TRACER'
     ports:
       - target: 5173
         published: 5173

@@ -1,4 +1,4 @@
-import { json, MetaFunction } from '@remix-run/node'
+import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import AMapComponent from '~/components/AMapComponent'
 import * as process from 'process'
 import { useLoaderData } from '@remix-run/react'
@@ -11,7 +11,7 @@ export const meta: MetaFunction = () => {
   ]
 }
 
-export const loader = () => {
+export const loader = ({ request }: LoaderFunctionArgs) => {
   return json({
     appKey: process.env.APP_KEY as string,
     appSecret: process.env.APP_SECRET as string
