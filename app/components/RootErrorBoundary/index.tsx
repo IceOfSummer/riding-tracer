@@ -10,7 +10,7 @@ function Handle403() {
       content: '请先登录',
       confirmText: '登录',
       onConfirm() {
-        location.href = '/login'
+        location.href = '/auth'
       }
     }).catch(e => {
       console.error(e)
@@ -25,13 +25,16 @@ const RootErrorBoundary = () => {
     switch (error.status) {
     case 403:
       return Handle403()
+    case 404:
+      return (
+        <div><span>404 Not Found</span></div>
+      )
     default:
       return (
         <div>
           {error.data.message}
         </div>
       )
-      
     }
     
   }

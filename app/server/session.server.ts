@@ -65,5 +65,11 @@ export const getSession = async (request: Request): Promise<SessionDataWrapper |
   }
 }
 
+export const createSession = async (request: Request, data: SessionData) => {
+  const session = await sessionStorage.getSession(request.headers.get('Cookie'))
+  session.set('userId', data.userId)
+  return session
+}
+
 export const commitSession = sessionStorage.commitSession
 export const destroySession = sessionStorage.destroySession
