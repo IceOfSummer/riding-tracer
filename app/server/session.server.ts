@@ -10,29 +10,45 @@ type SessionFlashData = {
 }
 
 
-const sessionStorage =
-    createCookieSessionStorage<SessionData & Record<string, unknown>, SessionFlashData>(
-      {
-        // a Cookie from `createCookie` or the CookieOptions to create one
-        cookie: {
-          name: '__session',
+function createSessionStorage() {
+  return createCookieSessionStorage<SessionData & Record<string, unknown>, SessionFlashData>(
+    {
+      // a Cookie from `createCookie` or the CookieOptions to create one
+      cookie: {
+        name: '__session',
 
-          // Expires can also be set (although maxAge overrides it when used in combination).
-          // Note that this method is NOT recommended as `new Date` creates only one date on each server deployment, not a dynamic date in the future!
-          //
-          // expires: new Date(Date.now() + 60_000),
-          httpOnly: true,
-          maxAge: 60,
-          path: '/',
-          sameSite: 'lax',
-          secrets: [process.env.SESSION_SECRET as string],
-          secure: true,
-        },
-      }
-    )
+        // Expires can also be set (although maxAge overrides it when used in combination).
+        // Note that this method is NOT recommended as `new Date` creates only one date on each server deployment, not a dynamic date in the future!
+        //
+        // expires: new Date(Date.now() + 60_000),
+        httpOnly: true,
+        maxAge: process.env.NODE_ENV === 'production' ? (60 * 10) : (60 * 60 * 24 * 30),
+        path: '/',
+        sameSite: 'lax',
+        secrets: [process.env.SESSION_SECRET as string],
+        secure: true,
+      },
+    }
+  )
+}
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __sessionStorage__: ReturnType<typeof createSessionStorage> | undefined
+}
+// 防止开发热更新需要重新登陆.
+let sessionStorage: ReturnType<typeof createSessionStorage>
+if (process.env.NODE_ENV === 'production') {
+  sessionStorage = createSessionStorage()
+} else {
+  if (!global.__sessionStorage__) {
+    global.__sessionStorage__ = createSessionStorage() 
+  }
+  sessionStorage = global.__sessionStorage__
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type SessionValueKey<ResultType> = string
+type SessionValueKey<ResultType> = string // fucking unused warnings
 
 type SessionDataWrapper = SessionData & {
   /**
@@ -57,7 +73,7 @@ async function getSession0(request: Request): Promise<SessionDataWrapper | null>
 async function getSession0(request: Request, force: boolean): Promise<SessionDataWrapper>
 async function getSession0(request: Request, force?: boolean): Promise<SessionDataWrapper | null> {
   const session = await sessionStorage.getSession(request.headers.get('Cookie'))
-  const userId =session.get('userId')
+  const userId = session.get('userId')
   if (userId === undefined) {
     if (force) {
       throw unauthorized()
@@ -70,7 +86,7 @@ async function getSession0(request: Request, force?: boolean): Promise<SessionDa
       return session.get(key) as T
     },
     set(key, value) {
-      session.set(key, value)
+      return session.set(key, value)
     }
   }
 }
