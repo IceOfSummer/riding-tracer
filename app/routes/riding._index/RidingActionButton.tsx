@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { ActionSheet, Button } from 'antd-mobile'
+import { useNavigate } from 'react-router'
 
 const actions = [
-  { text: '自由骑行', key: 'freedom' },
-  { text: '定点骑行', key: 'point' }
+  { text: '自由骑行', key: 'freedom', path: '/riding/freedom' },
+  { text: '定点骑行', key: 'point', path: '/riding/todo' }
 ]
 
 interface StartRidingProps {
@@ -11,10 +12,11 @@ interface StartRidingProps {
 
 const RidingActionButton: React.FC<StartRidingProps> = () => {
   const [visible, setVisible] = useState(false)
+  const navigate = useNavigate()
 
   const onSelect = (_: unknown, index: number) => {
     setVisible(false)
-    console.log(index)
+    navigate(actions[index].path)
   }
 
   return (
