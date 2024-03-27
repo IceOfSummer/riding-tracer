@@ -1,4 +1,5 @@
-import { json, LoaderFunctionArgs } from '@remix-run/node'
+import type { LoaderFunctionArgs } from '@remix-run/node'
+import { json } from '@remix-run/node'
 import { FloatingPanel } from 'antd-mobile'
 import React, { useEffect, useState } from 'react'
 import { getSession } from '~/server/session.server'
@@ -6,6 +7,7 @@ import StatisticCard from '~/routes/riding._index/StatisticCard'
 import { queryUserAchievement } from '~/server/db/achievement.server'
 import { assertNonNull } from '~/server/util/ResponseUtils.server'
 import RidingActionButton from '~/routes/riding._index/RidingActionButton'
+import LongPressButton from 'app/components/RidingControlPanel/LongPressButton'
 
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

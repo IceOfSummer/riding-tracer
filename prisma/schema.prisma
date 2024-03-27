@@ -7,26 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// TraceRecord(1:1) -> TracePointsSet
+// TraceRecord(1:n) -> TemporaryPointsSet
 model TraceRecord {
-  userId      Int
-  id          Int             @default(dbgenerated())
+  userId        Int
+  id            String
   // 开始时间，毫秒级时间戳
-  startTime   DateTime
-  pointsSet   TracePointsSet? @relation(fields: [pointsSetId], references: [id])
-  pointsSetId Int
+  startTime     DateTime
+  status        Int      @default(0)
+  tracePointsId String?
 
   @@id([userId, id])
 }
 
 model TracePointsSet {
-  id          Int           @id @default(dbgenerated())
+  id        String   @id
   // 结束时间，毫秒级时间戳
-  endTime     DateTime
-  status      Int
-  speed       Float
-  distance    Float
-  pointsSet   String
-  TraceRecord TraceRecord[]
+  endTime   DateTime
+  speed     Float
+  distance  Float
+  pointsSet String
+}
+
+// 临时点集
+model TemporaryPointsSet {
+  recordId String
+  id       String
+  // json数据
+  points   String
+
+  @@id([recordId, id])
 }
 
 model User {
@@ -37,17 +47,17 @@ model User {
 }
 
 model UserAchievement {
-  id Int @id
+  id              Int @id
   // 共跑了多少米
-  distance Int @default(0)
+  distance        Int @default(0)
   // 共记录了多少时间 秒
-  time Int @default(0)
+  time            Int @default(0)
   // 一共跑了几次
-  count Int @default(0)
+  count           Int @default(0)
   // 最长运动时间 s
-  longestTime Int @default(0)
+  longestTime     Int @default(0)
   // 最快的一次速度 m/s
-  fastest Int @default(0)
+  fastest         Int @default(0)
   // 一次最长跑了多远
   longestDistance Int @default(0)
 }

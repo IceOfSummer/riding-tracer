@@ -14,6 +14,8 @@ interface AMapComponentState {
 class AMapComponent extends React.Component<AMapComponentProps, AMapComponentState> {
 
   private mapInstance: AMap.Map | null = null
+  
+  private geolocation: Geolocation | null = null
 
 
   constructor(props: Readonly<AMapComponentProps> | AMapComponentProps) {
@@ -26,27 +28,34 @@ class AMapComponent extends React.Component<AMapComponentProps, AMapComponentSta
     window._AMapSecurityConfig = {
       securityJsCode: this.props.secretKey,
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    AMapLoader.load({
-      key: this.props.appKey,
-      version: '2.0'
-    }).then(() => {
-      this.mapInstance = new AMap.Map('map-holder')
-      this.resolveCurrentPosition().catch(e => {
-        console.log(e)
+    this.initMap().catch(e => {
+      Dialog.alert({
+        title: '加载地图失败',
+        content: e.message
+      }).catch(err => {
+        console.error(err)
       })
-    }).catch((e: unknown) => {
-      console.error(e)
     })
   }
 
-  private resolveCurrentPosition(): Promise<GeolocationResult | null> {
-    const mapInstance = this.mapInstance
-    if (!mapInstance) {
-      return Promise.resolve(null)
-    }
-    return new Promise<GeolocationResult | null>((resolve) => {
+  private async initMap() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    await AMapLoader.load({
+      key: this.props.appKey,
+      version: '2.0'
+    })
+    this.mapInstance = new AMap.Map('map-holder')
+    await this.initGeolocation()
+    await this.resolveCurrentPosition()
+  }
+  
+  private initGeolocation() {
+    return new Promise<void>((resolve) => {
+      const mapInstance = this.mapInstance
+      if (!mapInstance) {
+        return Promise.reject('初始化地图失败')
+      }
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       mapInstance.plugin('AMap.Geolocation', () => {
@@ -61,20 +70,24 @@ class AMapComponent extends React.Component<AMapComponentProps, AMapComponentSta
         }) as unknown as Geolocation
 
         mapInstance.addControl(geolocation)
-        geolocation.getCurrentPosition((status, result) => {
-          if (result.status !== 0) {
-            console.log(status, result)
-            Dialog.alert({
-              title: '获取定位失败',
-              content: result.message
-            }).catch(e => {
-              console.error(e)
-            })
-            resolve(null)
-          } else {
-            resolve(result)
-          }
-        })
+        this.geolocation = geolocation
+        resolve()
+      })
+    })
+  }
+
+  public resolveCurrentPosition(): Promise<GeolocationResult> {
+    const mapInstance = this.mapInstance
+    if (!mapInstance) {
+      return Promise.reject('初始化地图失败')
+    }
+    return new Promise((resolve, reject) => {
+      this.geolocation?.getCurrentPosition((status, result) => {
+        if (result.status !== 0) {
+          reject(result)
+        } else {
+          resolve(result)
+        }
       })
     })
   }

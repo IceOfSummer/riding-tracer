@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import type { loader } from '../route'
 import { useLoaderData } from '@remix-run/react'
 import styles from './StatisticCard.module.css'

@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 
 import * as process from 'process'
+import type { Point } from '~/server/db/types'
 
 let db: ReturnType<typeof initClient> 
 declare global {
@@ -9,7 +10,20 @@ declare global {
 }
 
 function initClient() {
-  return new PrismaClient()
+  return new PrismaClient().$extends({
+    result: {
+      temporaryPointsSet: {
+        points: {
+          compute({ points }): Point[] {
+            if (!points) {
+              return []
+            }
+            return JSON.parse(points)
+          }
+        }
+      }
+    }
+  })
 }
 
 

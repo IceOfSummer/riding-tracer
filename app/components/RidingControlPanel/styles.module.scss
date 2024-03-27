@@ -1,0 +1,93 @@
+@import "_global";
+.startBtnContainer {
+  @include flexRowContentCenter();
+  button {
+    position: absolute;
+    bottom: 30px;
+  }
+}
+
+.dashboard {
+  position: absolute;
+  top: 0;
+  background-color: #fff;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-bottom-left-radius: 1.25rem;
+  border-bottom-right-radius: 1.25rem;
+  padding: 1rem 0;
+  transition: all 1s;
+}
+.dashboardOpen {
+  transform: translateY(0);
+}
+.dashboardClose {
+  transform: translateY(-100%);
+}
+
+.topDownItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  & > span:first-child{
+    color: $color-text-disable;
+    font-size: 0.8rem;
+  }
+  & > span:last-child {
+    color: $primary-color;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}
+
+.back {
+  position: absolute;
+  top: 16px;
+  background-color: #ffffff;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 1s;
+}
+.backVisible {
+  left: 16px;
+}
+.backHide {
+  left: -100px;
+}
+
+.longPressButton {
+  border: 1px solid $error-color;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: $error-color;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  > div {
+    user-select: none;
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+}
+
+.longPressButtonPressing {
+  transition: all 3s linear;
+  &::before {
+    width: 100% !important;
+    transition: 3s linear !important;
+  }
+  color: #ffffff;
+}
+.longPressButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  z-index: -1;
+  width: 0;
+  height: 100%;
+  left: 0;
+  background-color: $error-color;
+  transition: ease-in-out 0.5s;
+}

@@ -1,8 +1,0 @@
-@import "_global";
-.startBtnContainer {
-  @include flexRowContentCenter();
-  button {
-    position: absolute;
-    bottom: 30px;
-  }
-}

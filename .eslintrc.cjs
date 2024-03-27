@@ -13,7 +13,9 @@ module.exports = {
     semi: [2, 'never'],
     'block-spacing': 'error',
     'object-curly-spacing': ['error', 'always'],
-    indent: ['error', 2]
+    indent: ['error', 2],
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/no-this-alias": 0
   },
   parserOptions: {
     ecmaVersion: "latest",

@@ -16,7 +16,7 @@ export type GeolocationResult = {
     /**
      * 经度 纬度
      */
-    position: [number, number]
+    position: AMap.LngLat
     /**
      * 定位类别
      */
