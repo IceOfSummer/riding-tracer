@@ -15,4 +15,4 @@ services:
       - target: 5173
         published: 5173
     working_dir: /opt/riding-tracer
-    command: sh -c "npm config set registry https://registry.npmmirror.com && npm install && npx prisma generate && npx remix-serve build/server/index.js"
+    command: sh -c "npm config set registry https://registry.npmmirror.com && npm install && npx prisma generate && npx sass --load-path=app/styles app/ && rm -rf build && npm run build && npx remix-serve build/server/index.js"

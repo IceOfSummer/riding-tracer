@@ -14,27 +14,21 @@
 
 [Remix build-and-run](https://remix.run/docs/en/main/start/quickstart#build-and-run)
 
-首先打包：`npx remix vite:build`，打包完成后会产生一个`build`目录。
+由于本人实在太菜，没找到优雅的打包部署方式，使用的是非常笨比的部署方式。
 
-将至少如下文件复制到服务器上(除了`node_modules`)：
-
-```text
-riding-tracer
-├── build
-│   └── ...
-├── prisma
-│   └── ...
-├── package.json
-└── node_modules
-
-```
+首先把项目克隆到服务器。
 
 之后将 [docker-compose(/deploy/app-prod/docker-compose.yaml)](/deploy/app-prod/docker-compose.yaml) 上传到服务器中。
 
-修改如下内容/属性：
-- `volume`: 文件挂载路径
-- `APP_KEY`: 环境变量，高德地图 `APP_KEY`
-- `APP_SECRET`: 环境变量，高德地图 `APP_SECRET`
+提供环境变量[env-template.properties](deploy/env-template.properties).
+
+之后手动生成数据库文件:
+
+```bash
+npx prisma db generate
+# 可选
+npx prisma db seed
+```
 
 修改完成后保存，使用如下指令启动:
 
