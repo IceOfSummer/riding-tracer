@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useState , useEffect , useContext } from 'react'
+import {  useEffect , useContext } from 'react'
 import type { LoaderFunctionArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { badRequest } from '~/server/util/ResponseUtils.server'
@@ -11,7 +11,7 @@ import type { Point } from '~/server/db/types'
 import BackButton from '~/components/BackButton'
 import { FloatingPanel } from 'antd-mobile'
 import TopDownItem from '~/components/TopDownItem'
-import {formatDate, formatDistance, formatTime, formatToNormalDate, timeDiff} from '~/util/UnitUtils'
+import { formatDistance, formatTime, formatToNormalDate, timeDiff } from '~/util/UnitUtils'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const session = await getSession(request, true)

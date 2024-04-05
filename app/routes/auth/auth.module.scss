@@ -1,5 +1,5 @@
 @import "_global";
-.login-header {
+.loginHeader {
   font-size: 2rem;
   color: $primary-color;
   box-sizing: border-box;
@@ -11,7 +11,7 @@
     margin-left: 0.5rem;
   }
 }
-.login-container {
+.loginContainer {
   width: 100%;
   transform: translateY(40%);
 }

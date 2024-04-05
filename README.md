@@ -22,8 +22,11 @@
 riding-tracer
 ├── build
 │   └── ...
+├── prisma
+│   └── ...
 ├── package.json
 └── node_modules
+
 ```
 
 之后将 [docker-compose(/deploy/app-prod/docker-compose.yaml)](/deploy/app-prod/docker-compose.yaml) 上传到服务器中。
