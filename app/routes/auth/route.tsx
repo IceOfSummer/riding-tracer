@@ -6,7 +6,7 @@ import styles from './auth.module.css'
 const LoginPage:React.FC = () => {
   return (
     <div className={styles.loginContainer}>
-      <div className={styles.styles}>
+      <div className={styles.loginHeader}>
         <RidingSvg width="3rem" height="3rem"/>
         <span>骑行轨迹记录系统</span>
       </div>
