@@ -5,14 +5,14 @@ import {
   Scripts,
   ScrollRestoration
 } from '@remix-run/react'
-import React from 'react'
+import type React from 'react'
 import 'normalize.css'
 import '~/styles/root.css'
 import RootErrorBoundary from '~/components/RootErrorBoundary'
 
 export function links() {
   return [
-    { rel: 'stylesheet', href: '/antd-mobile-styles' }, 
+    { rel: 'stylesheet', href: '/css/antd-styles.min.css' },
   ]
 }
 
