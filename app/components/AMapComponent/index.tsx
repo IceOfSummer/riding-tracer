@@ -1,14 +1,20 @@
 import React from 'react'
 import '@amap/amap-jsapi-types'
 import { Dialog } from 'antd-mobile'
-import { Geolocation, GeolocationResult } from '~/components/AMapComponent/types'
+import type { Geolocation, GeolocationResult } from '~/components/AMapComponent/types'
+import type { Point } from '~/server/db/types'
 
 interface AMapComponentProps {
   secretKey: string
   appKey: string
+  onInitDone: () => void
 }
 interface AMapComponentState {
   mapInstance: AMap.Map
+}
+
+interface Destroyable {
+  destroy: () => void
 }
 
 class AMapComponent extends React.Component<AMapComponentProps, AMapComponentState> {
@@ -16,7 +22,8 @@ class AMapComponent extends React.Component<AMapComponentProps, AMapComponentSta
   private mapInstance: AMap.Map | null = null
   
   private geolocation: Geolocation | null = null
-
+  
+  private destroys: Destroyable[] = []
 
   constructor(props: Readonly<AMapComponentProps> | AMapComponentProps) {
     super(props)
@@ -28,7 +35,9 @@ class AMapComponent extends React.Component<AMapComponentProps, AMapComponentSta
     window._AMapSecurityConfig = {
       securityJsCode: this.props.secretKey,
     }
-    this.initMap().catch(e => {
+    this.initMap().then(() => {
+      this.props.onInitDone()
+    }).catch(e => {
       Dialog.alert({
         title: '加载地图失败',
         content: e.message
@@ -90,6 +99,68 @@ class AMapComponent extends React.Component<AMapComponentProps, AMapComponentSta
         }
       })
     })
+  }
+
+  public drawTrace(points: Point[]) {
+    AMap.plugin('AMap.MoveAnimation', () => {
+      const map = this.mapInstance
+      if (!map) {
+        return
+      }
+      const marker = new AMap.Marker({
+        map,
+        position: points[0],
+        icon: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+        offset: new AMap.Pixel(-13, -26),
+      })
+      
+      new AMap.Polyline({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        map,
+        path: points,
+        showDir: true,
+        strokeColor: '#28f',
+        strokeWeight: 6
+      })
+  
+      const passedPolyline = new AMap.Polyline({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        map,
+        strokeColor: '#AF5',  //线颜色
+        strokeWeight: 6,      //线宽
+      })
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      marker.on('moving', function (e) {
+        passedPolyline.setPath(e.passedPath)
+        map.setCenter(e.target.getPosition(),true)
+      })
+      map.setFitView()
+  
+      marker.moveAlong(points, {
+        // 每一段的时长
+        duration: 500,//可根据实际采集时间间隔设置
+        // JSAPI2.0 是否延道路自动设置角度在 moveAlong 里设置
+        autoRotation: true,
+      })
+      this.destroys.push({
+        destroy() {
+          marker.pauseMove()
+        }
+      })
+    })
+  }
+  
+  public reset() {
+    const todo = this.destroys
+    this.destroys = []
+    for (const destroyable of todo) {
+      destroyable.destroy()
+    }
+    this.mapInstance?.clearMap()
+    this.resolveCurrentPosition().catch(e => { console.error(e) })
   }
 
   componentWillUnmount() {

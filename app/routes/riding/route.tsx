@@ -1,8 +1,9 @@
-import { json, MetaFunction } from '@remix-run/node'
+import type { MetaFunction } from '@remix-run/node'
+import { json } from '@remix-run/node'
 import AMapComponent from '~/components/AMapComponent'
 import * as process from 'process'
-import { Outlet, useLoaderData } from '@remix-run/react'
-import React, { useState } from 'react'
+import { Outlet, useLoaderData, useLocation } from '@remix-run/react'
+import React, { useEffect, useState } from 'react'
 
 export const meta: MetaFunction = () => {
   return [
@@ -19,7 +20,7 @@ export const loader = async () => {
 }
 
 export interface RidingRootContextState {
-  mapInstance: AMapComponent
+  mapInstance: AMapComponent,
 }
 
 
@@ -33,18 +34,27 @@ export const RidingRootContext =
 const Riding:React.FC = () => {
   const loaderData = useLoaderData<typeof loader>()
   const [contextValue, setContextValue] = useState<RidingRootContextState>()
+  const [mapInitDone, setMapInitDone] = useState(false)
+  const location = useLocation()
+
+  useEffect(() => {
+    console.log(location)
+    if (location.pathname === '/riding' && mapInitDone) {
+      contextValue?.mapInstance.reset()
+    }
+  }, [location])
 
   const refCallback = React.useCallback((instance: AMapComponent) => {
     setContextValue({
-      mapInstance: instance
+      mapInstance: instance,
     })
   }, [])
 
   return (
     <div>
-      <AMapComponent appKey={loaderData.appKey} secretKey={loaderData.appSecret} ref={refCallback}/>
+      <AMapComponent onInitDone={() => setMapInitDone(true)} appKey={loaderData.appKey} secretKey={loaderData.appSecret} ref={refCallback}/>
       {
-        contextValue ? (
+        contextValue && mapInitDone ? (
           <RidingRootContext.Provider value={contextValue}>
             <Outlet/>
           </RidingRootContext.Provider>

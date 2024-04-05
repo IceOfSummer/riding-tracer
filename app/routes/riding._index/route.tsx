@@ -7,16 +7,18 @@ import StatisticCard from '~/routes/riding._index/StatisticCard'
 import { queryUserAchievement } from '~/server/db/achievement.server'
 import { assertNonNull } from '~/server/util/ResponseUtils.server'
 import RidingActionButton from '~/routes/riding._index/RidingActionButton'
-import LongPressButton from 'app/components/RidingControlPanel/LongPressButton'
+import { queryRideRecord } from '~/server/db/riding.server'
 
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request, true)
   const achievement = await queryUserAchievement(session.userId)
+  const records = await queryRideRecord(session.userId)
   assertNonNull(achievement)
 
   return json({
-    achievement
+    achievement,
+    records
   })
 }
 

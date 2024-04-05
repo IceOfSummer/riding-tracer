@@ -2,9 +2,10 @@ import db from '~/server/db.server'
 import snowflake from '~/server/util/snowflake.server'
 import { badRequest } from '~/server/util/ResponseUtils.server'
 import type { Point } from '~/server/db/types'
-import type { Prisma } from '@prisma/client/index'
+import type { Prisma , TraceRecord, TracePointsSet } from '@prisma/client'
 import * as process from 'process'
-import {queryUserAchievement} from "~/server/db/achievement.server";
+import { queryUserAchievement } from '~/server/db/achievement.server'
+
 
 export enum TraceRecordStatus {
   ACTIVE,
@@ -176,4 +177,93 @@ export const finishRiding = async (userId: number, recordId: string, remainingPo
     })
     return Promise.resolve()
   })
+}
+
+export type RideRecordResult = TraceRecord & Omit<TracePointsSet, 'pointsSet' | 'id'>
+
+/**
+ * 查询骑行记录
+ * @param userId 用户id
+ * @param page 第几页，从0开始
+ * @param size 每页大小
+ */
+export const queryRideRecord = async (userId: number, page: number = 0, size: number = 10): Promise<RideRecordResult[]> => {
+  const records = await db.traceRecord.findMany({
+    where: {
+      userId,
+      status: TraceRecordStatus.FINISHED
+    },
+    skip: page * size,
+    take: size,
+    orderBy: {
+      id: 'desc'
+    }
+  })
+  if (!records) {
+    return []
+  }
+  const result: RideRecordResult[] = []
+  for (const record of records) {
+    const tracePointsId = record.tracePointsId
+    if (!tracePointsId) {
+      continue
+    }
+    const points = await db.tracePointsSet.findUnique({
+      where: {
+        id: tracePointsId
+      },
+      select: {
+        id: true,
+        distance: true,
+        endTime: true,
+        speed: true,
+      }
+    })
+    if (!points) {
+      continue
+    }
+    record.tracePointsId = tracePointsId
+    result.push({
+      ...points,
+      ...record
+    })
+  }
+  return result
+}
+
+export type RidingExactlyResult = TraceRecord & Omit<TracePointsSet, 'id'>
+
+/**
+ * 查询详细的骑行
+ * @param userId 用户id
+ * @param recordId 记录id
+ */
+export const queryExactlyRidingRecord = async (userId: number, recordId: string): Promise<RidingExactlyResult | null> => {
+  const record = await db.traceRecord.findUnique({
+    where: {
+      userId_id: {
+        userId,
+        id: recordId
+      }
+    }
+  })
+  if (!record) {
+    return null
+  }
+  const tracePointsId = record.tracePointsId
+  if (!tracePointsId) {
+    return null
+  }
+  const points = await db.tracePointsSet.findUnique({
+    where: {
+      id: tracePointsId
+    }
+  })
+  if (!points) {
+    return null
+  }
+  return {
+    ...points,
+    ...record
+  }
 }
