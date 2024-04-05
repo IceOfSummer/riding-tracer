@@ -1,11 +1,12 @@
 import type React from 'react'
-import { useEffect, useState } from 'react'
-import type { loader } from '../route'
+import { useRef , useEffect, useState } from 'react'
+import type { loader, LoadMoreArgs , action } from '../route'
 import { useLoaderData } from '@remix-run/react'
 import styles from './StatisticCard.module.css'
-import { Card, List, Button } from 'antd-mobile'
+import { Card, List, Button, InfiniteScroll } from 'antd-mobile'
 import { formatDate, formatDistance, formatTime, formatToNormalDate, timeDiff } from '~/util/UnitUtils'
 import { useNavigate } from 'react-router'
+import useAsyncFetcher from '~/server/util/useAsyncFetcher'
 
 
 function smartSecond(second: number): string {
@@ -32,19 +33,46 @@ const TopDownItem: React.FC<TopDownItemProps> = (props) => {
   )
 }
 
+interface StatisticCardProps {
+  lock: boolean
+}
+
+const PAGE_SIZE = 6
 
 /**
  * 数据统计
  */
-const StatisticCard: React.FC = () => {
+const StatisticCard: React.FC<StatisticCardProps> = props => {
   const { achievement, records } = useLoaderData<typeof loader>()
   const [rideRecords, setRideRecords] = useState<typeof records>([])
   const navigate = useNavigate()
+  const recordFetcher = useAsyncFetcher<typeof action>()
+  const [hasMore, setHasMore] = useState(true)
+
+  const currentPage = useRef(1)
 
   useEffect(() => {
     setRideRecords(records)
   }, [])
 
+  const loadMore = async () => {
+    if (props.lock) {
+      return
+    }
+    const arg: LoadMoreArgs = {
+      page: currentPage.current,
+      type: 'load',
+      size: PAGE_SIZE
+    }
+    const result = await recordFetcher.submit(JSON.stringify(arg), {
+      method: 'post',
+      encType: 'application/json'
+    })
+    if (result.result.length < PAGE_SIZE) {
+      setHasMore(false)
+    }
+    setRideRecords([...rideRecords, ...result.result])
+  }
 
   return (
     <div>
@@ -71,6 +99,7 @@ const StatisticCard: React.FC = () => {
               </List.Item>
             ))
           }
+          <InfiniteScroll hasMore={hasMore} loadMore={loadMore} />
         </List>
       </Card>
     </div>

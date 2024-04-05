@@ -187,7 +187,7 @@ export type RideRecordResult = TraceRecord & Omit<TracePointsSet, 'pointsSet' | 
  * @param page 第几页，从0开始
  * @param size 每页大小
  */
-export const queryRideRecord = async (userId: number, page: number = 0, size: number = 10): Promise<RideRecordResult[]> => {
+export const queryRideRecord = async (userId: number, page: number = 0, size: number = 6): Promise<RideRecordResult[]> => {
   const records = await db.traceRecord.findMany({
     where: {
       userId,
