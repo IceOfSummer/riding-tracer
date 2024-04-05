@@ -40,6 +40,11 @@ function formatTime0(arg0: Date | number, arg1?: Date | number): string {
 
 export const formatTime = formatTime0
 
+/**
+ * 计算两个时间之间差多少毫秒
+ * @param start 开始时间
+ * @param end 结束时间
+ */
 export const timeDiff = (start: TimeLike, end: TimeLike): number => {
   return toTimeStamp(end) - toTimeStamp(start)
 }

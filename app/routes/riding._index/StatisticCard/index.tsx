@@ -67,7 +67,7 @@ const StatisticCard: React.FC = () => {
                   <Button fill="none" className={styles.infoButton} onClick={() => navigate(`/riding/view/${item.id}`)}>查看详情</Button>
                 )}
                 description={`${formatDate(item.endTime)} (${formatToNormalDate(item.endTime)})`}>
-                骑行: {formatDistance(item.distance)} ({formatTime(timeDiff(item.startTime, item.endTime))})
+                骑行: {formatDistance(item.distance)} ({formatTime(timeDiff(item.startTime, item.endTime) / 1000)})
               </List.Item>
             ))
           }

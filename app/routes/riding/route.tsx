@@ -38,7 +38,6 @@ const Riding:React.FC = () => {
   const location = useLocation()
 
   useEffect(() => {
-    console.log(location)
     if (location.pathname === '/riding' && mapInitDone) {
       contextValue?.mapInstance.reset()
     }
