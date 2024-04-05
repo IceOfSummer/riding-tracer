@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import RidingSvg from '~/components/Icons/RidingSvg'
 import { Outlet } from '@remix-run/react'
 import('./auth.css')

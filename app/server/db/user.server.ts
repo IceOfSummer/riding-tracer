@@ -44,3 +44,34 @@ export const tryLogin = async (username?: string, password?: string): Promise<{i
     id: result.id
   }
 }
+
+
+
+/**
+ * 注册用户
+ * @param username 用户名
+ * @param password 密码
+ * @return {number} 新创建用户的uid，返回空表示用户已经存在
+ */
+export const registerUser = async (username: string, password: string): Promise<{id: number} | null> => {
+  const cnt = await db.user.count({
+    where: {
+      username
+    }
+  })
+  if (cnt > 0) {
+    return null
+  }
+
+  const usr = await db.user.create({
+    data: {
+      username,
+      password: pbkdf2(password),
+      createTime: new Date()
+    }
+  })
+  return {
+    id: usr.id,
+  }
+}
+

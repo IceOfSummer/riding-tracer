@@ -1,0 +1,13 @@
+@import "_global";
+.header {
+  font-size: 1.5rem;
+  color: $primary-color;
+  font-weight: bold;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.form {
+  --border-bottom: none;
+  --border-top: none;
+}
