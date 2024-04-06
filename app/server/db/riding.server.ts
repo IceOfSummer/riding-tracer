@@ -161,7 +161,7 @@ export const finishRiding = async (userId: number, recordId: string, remainingPo
     if (!oldAchievement) {
       throw badRequest('用户不存在')
     }
-    const timeCost = (result.data.endTime as Date).getTime() - trace.startTime.getTime()
+    const timeCost = ((result.data.endTime as Date).getTime() - trace.startTime.getTime()) / 1000
     await tx.userAchievement.update({
       data: {
         fastest: Math.max(result.data.distance / timeCost, oldAchievement.fastest),
