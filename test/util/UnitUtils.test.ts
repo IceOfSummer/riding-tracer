@@ -28,5 +28,6 @@ test('Test Date Format', () => {
   expect(formatDate(new Date(2024, 4, 5, 12, 0, 0, 0), current)).toBe('1小时前')
   expect(formatDate(new Date(2024, 4, 4, 13, 0, 0, 0), current)).toBe('1天前')
   expect(formatDate(new Date(2024, 4, 4, 12, 0, 0, 0), current)).toBe('1天1小时前')
+  expect(formatDate(new Date(2024, 3, 8, 12, 17, 0, 0), current)).toBe('27天1小时前')
   expect(formatDate(new Date(2024, 3, 5, 13, 0, 0, 0), current)).toBe('30天前')
 })

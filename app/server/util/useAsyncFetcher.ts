@@ -15,7 +15,6 @@ export default function useAsyncFetcher<T>(key?: string) {
   const promise = useRef<CallbackPromise<T>>()
 
   useEffect(() => {
-    console.log(fetcher.data)
     if (fetcher.data) {
       promise.current?.resolve(fetcher.data)
     }

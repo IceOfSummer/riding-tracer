@@ -92,7 +92,7 @@ export const formatDate = (timeLike: TimeLike, currentTime?: TimeLike): string =
   } else if (diff < 3600 * 24) {
     return Math.round(diff / (60 * 60)) + '小时前'
   } else if (diff < 3600 * 24 * 30) {
-    const hour = Math.round(diff % ((60 * 60 * 24))) / 3600
+    const hour = Math.round((diff % ((60 * 60 * 24))) / 3600)
     return `${Math.round(diff / (60 * 60 * 24))}天${hour > 0 ? hour + '小时' : ''}前`
   } else {
     return `${Math.round(diff / (60 * 60 * 24))}天前`
